@@ -1,6 +1,7 @@
 const url = 'http://localhost:8080/api/';
 
 const todoRoot = document.getElementById('todoRoot');
+// const todoRoot = document.querySelector('#todoRoot'); // こう書いても良い。なお、あまりタイピング量は変わらない。
 
 /*
  * GET 
@@ -11,7 +12,8 @@ const getToDos = () => {
   })
     .then((response) => response.json())
     .then(array => {
-      // obj は受信したJSON文字列をJavaScriptのオブジェクトへ変換した値
+      // array は受信したJSON文字列をJavaScriptのオブジェクト型データへ変換した値。
+      // 今回の場合は配列
       console.log(array);
       todoRoot.innerHTML = ''; // 全てのToDo表示をクリア
       array.forEach(todo => {
@@ -112,9 +114,9 @@ const deleteTodo = () => {
     });
 }
 
-// ページがロードされたらサーバからToDoリスト読み込み
-getToDos();
-
+/*
+ * 追加、更新、削除操作
+ */
 document.getElementById('postButton').addEventListener('click', () => {
   postTodo();
 });
@@ -127,3 +129,58 @@ document.getElementById('deleteButton').addEventListener('click', () => {
   deleteTodo();
 });
 
+ /* 
+  * 機能の切り替え
+  */
+const openListMode = () => {
+  history.pushState({}, null, '/');
+  // ToDoリスト読み込み
+  getToDos();
+  document.getElementById('list').style.display = 'block';
+  document.getElementById('profile').style.display = 'none';
+  document.getElementById('config').style.display = 'none';
+};
+
+const openProfileMode = () => {
+  history.pushState({}, null, 'profile');
+  document.getElementById('list').style.display = 'none';
+  document.getElementById('profile').style.display = 'block';
+  document.getElementById('config').style.display = 'none';
+};
+
+const openConfigMode = () => {
+  history.pushState({}, null, 'config');
+  document.getElementById('list').style.display = 'none';
+  document.getElementById('profile').style.display = 'none';
+  document.getElementById('config').style.display = 'block';
+}
+
+/*
+ * 現在のURLによって開く機能を変える
+ */
+const router = () => {
+  if (window.location.pathname === '/' || window.location.pathname === '/index.html'){
+    openListMode();
+  }
+  else if(window.location.pathname === '/profile'){
+    openProfileMode();
+  }
+  else if(window.location.pathname === '/config'){
+    openConfigMode();
+  }
+};
+
+document.getElementById('listMode').addEventListener('click', () => {
+  openListMode();
+});
+
+document.getElementById('profileMode').addEventListener('click', () => {
+  openProfileMode();
+});
+
+document.getElementById('configMode').addEventListener('click', () => {
+  openConfigMode();
+});
+
+// ページがロードされたら、URLに応じた機能を開く
+router();

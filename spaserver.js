@@ -14,19 +14,7 @@ const todos = [
 const restAPI = (req, res, resource) => {
     const contentType = 'application/json; charset=utf-8';
 
-    // ローカルファイルの html からアクセスする場合に必要。
-    res.setHeader('Access-Control-Allow-Origin', '*');
-
-    if (req.method == 'OPTIONS') {
-      // ローカルファイルの html からPOSTする場合に必要。
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-      res.statusCode = 200;
-      res.end();
-      return;
-    } 
-    else if (req.method === 'GET') {
+    if (req.method === 'GET') {
       if (resource === '/todos') {
         res.statusCode = 200;
           res.setHeader('Content-Type', contentType);
@@ -149,11 +137,18 @@ const staticFile = (req, res) => {
     let encoding = 'utf-8';
 
     if (url.endsWith('.css')) contentType = 'text/css; charset=utf-8';
+    else if (url.endsWith('.js')) contentType = 'text/javascript';
     else if (url.endsWith('.jpg')) {
         // バイナリファイルの場合 null を設定
         // https://nodejs.org/api/fs.html#fsreadfilepath-options-callback
         encoding = null;
         contentType = 'image/jpeg';
+    }
+    else if (!url.match(/\./)) {
+      // 拡張子がないファイルの場合、
+      // index.html を返すことにする。
+      // /profile, /config などの SPA の各機能のURLが呼ばれたときにも対応
+      url = '/index.html';
     }
 
     fs.readFile(`${documentRoot}${url}`, encoding, (err, data) => {
