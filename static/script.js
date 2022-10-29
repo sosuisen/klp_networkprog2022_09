@@ -129,6 +129,18 @@ document.getElementById('deleteButton').addEventListener('click', () => {
  /* 
   * 機能の切り替え
   */
+document.getElementById('listMode').addEventListener('click', () => {
+  openListMode();
+});
+
+document.getElementById('profileMode').addEventListener('click', () => {
+  openProfileMode();
+});
+
+document.getElementById('configMode').addEventListener('click', () => {
+  openConfigMode();
+});
+
 const openListMode = () => {
   history.pushState({}, null, '/');
   // ToDoリスト読み込み
@@ -166,18 +178,6 @@ const router = () => {
     openConfigMode();
   }
 };
-
-document.getElementById('listMode').addEventListener('click', () => {
-  openListMode();
-});
-
-document.getElementById('profileMode').addEventListener('click', () => {
-  openProfileMode();
-});
-
-document.getElementById('configMode').addEventListener('click', () => {
-  openConfigMode();
-});
 
 // ページがロードされたら、URLに応じた機能を開く
 router();
