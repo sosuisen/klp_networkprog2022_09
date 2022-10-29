@@ -3,6 +3,13 @@ const url = 'http://localhost:8080/api/';
 const todoRoot = document.getElementById('todoRoot');
 // const todoRoot = document.querySelector('#todoRoot'); // こう書いても良い。なお、あまりタイピング量は変わらない。
 
+const appendToDo = todo => {
+  const todoElm = document.createElement('div');
+  todoElm.id = `item_${todo.id}`;        
+  todoElm.innerHTML = `${todo.id}, ${todo.title}, ${todo.completed}`;
+  todoRoot.append(todoElm);
+};
+
 /*
  * GET 
  */
@@ -18,10 +25,7 @@ const getToDos = () => {
       todoRoot.innerHTML = ''; // 全てのToDo表示をクリア
       array.forEach(todo => {
         // 配列から todo を一つずつ取り出して、div要素を作成
-        const todoElm = document.createElement('div');
-        todoElm.id = `item_${todo.id}`;        
-        todoElm.innerHTML = `${todo.id}, ${todo.title}, ${todo.completed}`;
-        todoRoot.appendChild(todoElm);
+        appendToDo(todo);
       });
     })
     .catch(error => {
@@ -45,12 +49,9 @@ const postTodo = () => {
   })
     .then((response) => response.json())
     .then(todo => {
-      console.log(todo);
+      console.log(todo);      
       // todoRoot へ新規ToDoを追加
-      const todoElm = document.createElement('div');
-      todoElm.id = `item_${todo.id}`;
-      todoElm.innerHTML = `${todo.id}, ${todo.title}, ${todo.completed}`;
-      todoRoot.appendChild(todoElm);
+      appendToDo(todo);
     })
     .catch(error => {
       console.error('Error:', error);
@@ -80,7 +81,6 @@ const putTodo = () => {
     .then(todo => {
       console.log(todo);
       const todoElm = document.getElementById(`item_${todo.id}`);
-      todoElm.id = `item_${todo.id}`;
       todoElm.innerHTML = `${todo.id}, ${todo.title}, ${todo.completed}`;
     })
     .catch(error => {
@@ -92,9 +92,6 @@ const putTodo = () => {
  * DELETE 
  */
 const deleteTodo = () => {
-  const updatedTodo = {
-    title: document.getElementById('todoTitle').value,
-  };
   const itemId = document.getElementById('itemId').value;
   if (itemId === null) return;
   fetch(url + 'todos/' + itemId, {
@@ -107,7 +104,7 @@ const deleteTodo = () => {
     .then(todo => {
       console.log(todo);
       const todoElm = document.getElementById(`item_${todo.id}`);
-      todoRoot.removeChild(todoElm);
+      todoElm.remove();
     })
     .catch(error => {
       console.error('Error:', error);

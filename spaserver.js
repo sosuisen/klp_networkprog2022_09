@@ -47,7 +47,9 @@ const restAPI = (req, res, resource) => {
                 console.log(`Data: ${data}`);
                 const obj = JSON.parse(data)
 
-                const lastId = todos[todos.length - 1].id;
+                let lastId = 0;
+                if(todos.length > 0) lastId = todos[todos.length - 1].id;
+
                 const newTodo = {
                     ...obj,
                     id: lastId + 1,
